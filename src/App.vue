@@ -1,30 +1,45 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <AsyncHeader />
+
+  <div v-if="error" class="card">
+    <div class="card-body">
+      <pre>{{ error }}</pre>
+    </div>
+  </div>
+
+  <router-view />
+
+  <AsyncFooter />
 </template>
 
+<script>
+import { defineAsyncComponent, onErrorCaptured, ref } from 'vue';
+
+export default {
+  name: 'App',
+  setup() {
+    const isDevelop = process.env.NODE_ENV === 'development';
+    const error = ref(null);
+
+    onErrorCaptured(async (caughtError) => {
+      if (isDevelop) {
+        console.log('onErrorCaptured caughtError', { caughtError });
+        error.value = caughtError;
+      }
+    });
+
+    return {
+      error,
+    };
+  },
+  components: {
+    AsyncHeader: defineAsyncComponent(() => import('./views/_partials/Header.vue')),
+    AsyncFooter: defineAsyncComponent(() => import('./views/_partials/Footer.vue')),
+  },
+};
+</script>
+
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
+@import "assets/app.scss";
 </style>
