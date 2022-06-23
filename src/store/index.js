@@ -1,14 +1,8 @@
 import { createStore } from 'vuex';
+import ads from './ads';
 
 export default createStore({
-  state: {
-  },
-  getters: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
   modules: {
+    ads,
   },
 });
